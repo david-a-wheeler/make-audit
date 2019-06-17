@@ -1,0 +1,15 @@
+
+all: bbb
+
+bbb: ccc eee
+	sed -e 's/c/b/g' < ccc > bbb
+
+ccc: # Missed ddd
+	echo 'ccc' > ccc
+	cat ddd >> ccc
+
+eee: # Never gets created
+	echo "Not creating eee, nyah nyah"
+
+clean:
+	rm -fr bbb ccc
