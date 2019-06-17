@@ -1,3 +1,12 @@
 #!/bin/sh
 
-make -f Makefile.test clean && ./make-audit -f Makefile.test
+make -f Makefile.test clean && ./make-audit -f Makefile.test 2> actual
+cat actual
+
+echo
+diff -u actual expected
+result="$?"
+
+if [ "$result" = '0' ]; then
+    echo "SUCCESS"
+fi

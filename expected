@@ -1,0 +1,3 @@
+*** Error: Target eee : uncreated reported target: {'eee'}
+*** Error: Target ccc : unreported prerequisites: {'ddd'}
+*** Error: Target bbb : claimed but unused prerequisites: {'eee'}
