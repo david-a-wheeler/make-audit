@@ -1,5 +1,7 @@
 #!/bin/sh
 
+PATH="$PATH:$HOME/pmaudit"
+
 make -f Makefile.test clean && ./make-audit -f Makefile.test 2> actual
 cat actual
 
