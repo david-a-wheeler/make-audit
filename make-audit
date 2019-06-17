@@ -86,7 +86,7 @@ def analyze_results():
                     analysiscode = 1
                 only_in_expected = expected_final - actual_final
                 if only_in_expected:
-                    print('*** Error: Target ' + target + ' : uncreated reported target: ' + str(only_in_expected), file=sys.stderr)
+                    print('*** Error: Target ' + target + ' : unmodified reported target: ' + str(only_in_expected), file=sys.stderr)
                     analysiscode = 1
                 # print("Actual = " + str(actual_prerequisites) + " Expected = " + str(expected_prerequisites))
     return analysiscode
