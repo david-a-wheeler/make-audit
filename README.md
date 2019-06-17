@@ -4,7 +4,7 @@ This is a simple, easy-to-use tool for auditing makefiles.
 It will report when an execution of make reads or changes
 files in ways that are inconsistent with its Makefile.
 
-It requires an "auditor" tool in your PATH name pmaudit.
+It requires an "auditor" tool named `pmaudit` in your PATH.
 It also *requires* GNU make to be installed and run as `make`.
 
 ## Running
@@ -49,6 +49,9 @@ We expect that will be pmaudit (poor man's audit).
 That tool records the access times (atimes) and modification times (mtimes)
 before and after an execution and reports the differences.
 
+The `pmaudit` tool only notices file changes in the current directory
+and below by default, so those are also the only changes we notice.
+
 ## TODO
 
 NOTE: This is an *extremely* early version.
@@ -57,6 +60,14 @@ Much needs fixing.
 For example, this doesn't properly handle grouped targets or
 empty commands.  It should handle makefiles with their own SHELL and
 .ONESHELL values.
+I don't think it handles multi-line make commands exactly correctly
+(it's close but not quite right).
+
+Lots more options are needed.
+You should be able to control which make, which auditor,
+what directories to watch/exclude, etc.
+
+Lots more tests are needed.
 
 I haven't even put a LICENSE here yet.
 That will all be coming.
