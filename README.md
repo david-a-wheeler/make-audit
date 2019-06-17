@@ -71,3 +71,5 @@ Lots more tests are needed.
 
 I haven't even put a LICENSE here yet.
 That will all be coming.
+It will be a widely-used open source software license,
+probably MIT, GPL-2.0-or-later, or GPL-3.0-or-later.
