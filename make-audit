@@ -1,0 +1,70 @@
+#!/usr/bin/python3
+
+import sys
+import os
+import shutil
+import subprocess
+import json
+
+MAKE_AUDIT_DIR='.make-audit'
+
+def run_make(parameters):
+    """Run make command with parameters"""
+    # Presumes "make" and "pmaudit" are what we want to run & are on PATH.
+    command = ['make', '--eval=.ONESHELL:', 'SHELL=pmaudit',
+        '.SHELLFLAGS=--json ' + MAKE_AUDIT_DIR + '/$@.json --custom TARGET=$@ --custom PREREQUISITES=$^ --custom ORDER_ONLY=$| --custom ARCHIVE=$% --custom STEM=$* -c'] 
+    command.extend(parameters) # Add parameters (if any) to the end
+    result = subprocess.run(command)
+    return result.returncode
+
+def analyze_results():
+    """Analyze & report results. Returns error code (0 if no error)"""
+    analysiscode = 0
+    for root, dirs, files in os.walk(MAKE_AUDIT_DIR):
+        for filename in files:
+            if filename.endswith('.json'):
+                full_filename = os.path.join(root, filename)
+                results_file = open(full_filename, 'r')
+                results_data = json.load(results_file)
+                target = results_data['CUSTOM']['TARGET']
+                #
+                actual_prerequisites = set(results_data['DB']['PREREQS'].keys())
+                expected_prerequisites = results_data['CUSTOM']['PREREQUISITES']
+                expected_prerequisites = set(expected_prerequisites.split())
+                only_in_actual = actual_prerequisites - expected_prerequisites
+                if only_in_actual:
+                    print('*** Error: Target ' + target + ' : unreported prerequisites: ' + str(only_in_actual))
+                    analysiscode = 1
+                only_in_expected = expected_prerequisites - actual_prerequisites
+                if only_in_expected:
+                    print('*** Error: Target ' + target + ' : claimed but unused prerequisites: ' + str(only_in_expected))
+                    analysiscode = 1
+                #
+                actual_final = set(results_data['DB']['FINALS'].keys())
+                expected_final = set(target.split())
+                only_in_actual = actual_final - expected_final
+                if only_in_actual:
+                    print('*** Error: Target ' + target + ' : unreported target : ' + str(only_in_actual))
+                    analysiscode = 1
+                only_in_expected = expected_final - actual_final
+                if only_in_expected:
+                    print('*** Error: Target ' + target + ' : uncreated reported target: ' + str(only_in_expected))
+                    analysiscode = 1
+                # print("Actual = " + str(actual_prerequisites) + " Expected = " + str(expected_prerequisites))
+    return analysiscode
+
+def main(argv):
+    """Main program"""
+    if os.path.isdir(MAKE_AUDIT_DIR): # Remove any old results
+        shutil.rmtree(MAKE_AUDIT_DIR)
+    returncode = run_make(argv[1:])
+    analysiscode = analyze_results()
+    if returncode != 0:
+        return returncode
+    elif analysiscode != 0:
+        return analysiscode
+    else:
+        return 0
+
+if __name__ == '__main__':
+    exit(main(sys.argv))
