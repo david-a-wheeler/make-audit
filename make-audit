@@ -8,11 +8,49 @@ import json
 
 MAKE_AUDIT_DIR='.make-audit'
 
+# NOTE: This approach requires GNU make (or anything that takes GNU make
+# extensions).  We intercept what make does by setting SHELL,
+# SHELLFLAGS, and .ONESHELL, but that isn't enough to reliably
+# pass the lists of prerequisites and targets.
+# We get prerequisite info by passing that through SHELLFLAGS,
+# but the "obvious" way doesn't work because make forces the parameters
+# to split on spaces (even when we include quote marks).
+# To get around this, we replace spaces with a different character
+# make_parameter_separator from within make, and then split things
+# when we receive them.
+# This is possible only because GNU make supports functions,
+# specifically $(subst ...) and $(strip ).
+
+make_parameter_separator = '\001'
+
+def my_split(s):
+    "Split string with make_parameter_separator into a list"
+    # Note: if string is empty, must return empty list.
+    if not s:
+        return []
+    else:
+        return s.split(make_parameter_separator)
+
+def make_parameter(name,expression):
+    """Return name='expression' so make will provide the data to us"""
+    # This is complicated because make insists on splitting shell
+    # parameters on spaces.  It's even tricky to replace space with not-space,
+    # because to replace space in $(subst from,to,text) we need "from" to
+    # be a space... but the space is removed!  Thankfully $(strip ) is a
+    # safe way to represent the empty string (note the trailing space).
+    return (' --custom ' + name + '=$(subst $(strip ) ,' +
+           make_parameter_separator + ',' + expression + ')')
+
 def run_make(parameters):
     """Run make command with parameters"""
     # Presumes "make" and "pmaudit" are what we want to run & are on PATH.
     command = ['make', '--eval=.ONESHELL:', 'SHELL=pmaudit',
-        '.SHELLFLAGS=--json ' + MAKE_AUDIT_DIR + '/$@.json --custom TARGET=$@ --custom PREREQUISITES=$^ --custom ORDER_ONLY=$| --custom ARCHIVE=$% --custom STEM=$* -c'] 
+        ('.SHELLFLAGS=--json ' + os.path.join(MAKE_AUDIT_DIR, '$@.json') +
+         make_parameter('TARGET', '$@') +
+         make_parameter('PREREQUISITES', '$^') +
+         make_parameter('ORDER_ONLY', '$|') +
+         make_parameter('ARCHIVE', '$%') +
+         make_parameter('STEM', '$*') + ' -c')]
     command.extend(parameters) # Add parameters (if any) to the end
     result = subprocess.run(command)
     return result.returncode
@@ -26,29 +64,29 @@ def analyze_results():
                 full_filename = os.path.join(root, filename)
                 results_file = open(full_filename, 'r')
                 results_data = json.load(results_file)
-                target = results_data['CUSTOM']['TARGET']
+                target = results_data['CUSTOM']['TARGET'] # .replace("'",'')
                 #
                 actual_prerequisites = set(results_data['DB']['PREREQS'].keys())
-                expected_prerequisites = results_data['CUSTOM']['PREREQUISITES']
-                expected_prerequisites = set(expected_prerequisites.split())
+                expected_prerequisites = results_data['CUSTOM']['PREREQUISITES'] # .replace("'",'')
+                expected_prerequisites = set(my_split(expected_prerequisites))
                 only_in_actual = actual_prerequisites - expected_prerequisites
                 if only_in_actual:
-                    print('*** Error: Target ' + target + ' : unreported prerequisites: ' + str(only_in_actual))
+                    print('*** Error: Target ' + target + ' : unreported prerequisites: ' + str(only_in_actual), file=sys.stderr)
                     analysiscode = 1
                 only_in_expected = expected_prerequisites - actual_prerequisites
                 if only_in_expected:
-                    print('*** Error: Target ' + target + ' : claimed but unused prerequisites: ' + str(only_in_expected))
+                    print('*** Error: Target ' + target + ' : claimed but unused prerequisites: ' + str(only_in_expected), file=sys.stderr)
                     analysiscode = 1
                 #
                 actual_final = set(results_data['DB']['FINALS'].keys())
-                expected_final = set(target.split())
+                expected_final = set(my_split(target))
                 only_in_actual = actual_final - expected_final
                 if only_in_actual:
-                    print('*** Error: Target ' + target + ' : unreported target : ' + str(only_in_actual))
+                    print('*** Error: Target ' + target + ' : unreported target : ' + str(only_in_actual), file=sys.stderr)
                     analysiscode = 1
                 only_in_expected = expected_final - actual_final
                 if only_in_expected:
-                    print('*** Error: Target ' + target + ' : uncreated reported target: ' + str(only_in_expected))
+                    print('*** Error: Target ' + target + ' : uncreated reported target: ' + str(only_in_expected), file=sys.stderr)
                     analysiscode = 1
                 # print("Actual = " + str(actual_prerequisites) + " Expected = " + str(expected_prerequisites))
     return analysiscode

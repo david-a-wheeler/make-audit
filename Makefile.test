@@ -4,12 +4,18 @@ all: bbb
 bbb: ccc eee
 	sed -e 's/c/b/g' < ccc > bbb
 
+# For now, tests should be 1-line commands until it's more robust
 ccc: # Missed ddd
-	echo 'ccc' > ccc
-	cat ddd >> ccc
+	echo 'ccc' > ccc ; cat ddd >> ccc
 
 eee: # Never gets created
 	echo "Not creating eee, nyah nyah"
 
 clean:
-	rm -fr bbb ccc
+	rm -fr bbb ccc eee
+	touch ddd # Create this to detect unexpected input
+
+# Ensure that setting "strip" won't change anything
+strip = hello
+nothing:
+	echo "This X$(strip )Y can represent nothing"
