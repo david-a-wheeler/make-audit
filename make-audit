@@ -46,11 +46,11 @@ def run_make(parameters):
     # Presumes "make" and "pmaudit" are what we want to run & are on PATH.
     command = ['make', '--eval=.ONESHELL:', 'SHELL=pmaudit',
         ('.SHELLFLAGS=--json ' + os.path.join(MAKE_AUDIT_DIR, '$@.json') +
-         make_parameter('TARGET', '$@') +
-         make_parameter('PREREQUISITES', '$^') +
-         make_parameter('ORDER_ONLY', '$|') +
-         make_parameter('ARCHIVE', '$%') +
-         make_parameter('STEM', '$*') + ' -c')]
+         make_parameter('target', '$@') +
+         make_parameter('prerequisites', '$^') +
+         make_parameter('order_only', '$|') +
+         make_parameter('archive', '$%') +
+         make_parameter('stem', '$*') + ' -c')]
     command.extend(parameters) # Add parameters (if any) to the end
     result = subprocess.run(command)
     return result.returncode
@@ -64,10 +64,10 @@ def analyze_results():
                 full_filename = os.path.join(root, filename)
                 results_file = open(full_filename, 'r')
                 results_data = json.load(results_file)
-                target = results_data['CUSTOM']['TARGET'] # .replace("'",'')
+                target = results_data['custom']['target'] # .replace("'",'')
                 #
-                actual_prerequisites = set(results_data['DB']['PREREQS'].keys())
-                expected_prerequisites = results_data['CUSTOM']['PREREQUISITES'] # .replace("'",'')
+                actual_prerequisites = set(results_data['db']['prereqs'].keys())
+                expected_prerequisites = results_data['custom']['prerequisites'] # .replace("'",'')
                 expected_prerequisites = set(my_split(expected_prerequisites))
                 only_in_actual = actual_prerequisites - expected_prerequisites
                 if only_in_actual:
@@ -78,7 +78,7 @@ def analyze_results():
                     print('*** Error: Target ' + target + ' : claimed but unused prerequisites: ' + str(only_in_expected), file=sys.stderr)
                     analysiscode = 1
                 #
-                actual_final = set(results_data['DB']['FINALS'].keys())
+                actual_final = set(results_data['db']['finals'].keys())
                 expected_final = set(my_split(target))
                 only_in_actual = actual_final - expected_final
                 if only_in_actual:
