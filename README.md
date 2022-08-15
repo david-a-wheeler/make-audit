@@ -4,10 +4,14 @@ This is a simple, easy-to-use tool for auditing makefiles.
 It will report when an execution of make reads or changes
 files in ways that are inconsistent with its Makefile.
 
-It requires an "auditor" tool named `pmaudit` in your PATH.
-It also *requires* GNU make to be installed and run as `make`.
-Finally, it requires `python3` as this tool is primarily implemented
-using Python version 3.X.
+## Prerequisites
+
+`make-audit` requires also installing these OSS components before it can work:
+
+* `pmaudit`, an "auditor" tool, in your PATH. Please
+  download and install [boyski's pmaudit](https://github.com/boyski/pmaudit).
+* GNU make (installed and run as `make`).
+* `python3`  (this tool is primarily implemented in Python version 3.X).
 
 ## Running
 
@@ -77,7 +81,7 @@ I don't think it handles multi-line make commands exactly correctly
 (it's close but not quite right).
 
 Lots more options are needed.
-You should be able to control which make, which auditor,
+You should be able to control which make (make? gmake?), which auditor,
 what directories to watch/exclude, etc.
 
 There should be a way to easily override false positives.
