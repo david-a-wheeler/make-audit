@@ -61,14 +61,14 @@ Here are the errors it can report:
 
   If you don't want to use grouped targets (e.g., because you're using
   an old version of GNU make), you can instead use a "marker
-  file" to simulate grouped targets; just have TARGET and everything else
+  file" to simulate grouped targets. Just have TARGET and everything else
   depend on some marker file (`TARGET SET: FILE.marker`), then create
   a separate rule to create the marker file
   (`FILE.marker: PREREQUISITES`).
   Attach all commands to this latter rule that creates the marker file,
   and be sure to update the marker file (e.g., `touch FILE.marker`).
   We suggest using the suffix `.marker` so future versions of `make-audit`
-  can automatically detect and properly process this case.
+  could automatically detect and properly process this case.
 
 Note that when it reports an error it will also return a nonzero (false)
 error code.
