@@ -66,6 +66,8 @@ and below by default, so those are also the only changes we notice.
 NOTE: This is an *extremely* early version.
 Much needs fixing.
 
+This needs an easy-to-use install method (at least one).
+
 For example, this doesn't properly handle grouped targets or
 empty commands.  It should handle makefiles with their own SHELL and
 .ONESHELL values.
