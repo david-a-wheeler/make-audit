@@ -1,7 +1,7 @@
 # make-audit
 
 This is a simple, easy-to-use tool for auditing makefiles.
-It will report when an execution of make reads or changes
+It will report when an execution of `make` either reads or changes
 files in ways that are inconsistent with its Makefile.
 
 ## Prerequisites
@@ -15,7 +15,7 @@ files in ways that are inconsistent with its Makefile.
 
 ## Running
 
-To run, simply enter:
+To run `make-audit`, simply enter:
 
 ~~~~
 make-audit [*MAKE-OPTIONS*]
@@ -70,24 +70,26 @@ and below by default, so those are also the only changes we notice.
 ## TODO
 
 NOTE: This is an *extremely* early version.
-Much needs fixing.
+Much needs fixing, e.g.:
 
-This needs an easy-to-use install method (at least one).
+* This needs an easy-to-use install method (at least one).
 
-For example, this doesn't properly handle grouped targets or
-empty commands.  It should handle makefiles with their own SHELL and
-.ONESHELL values.
-I don't think it handles multi-line make commands exactly correctly
+* For example, this doesn't properly handle grouped targets or
+empty commands.
+
+* It should handle makefiles with their own SHELL and .ONESHELL values.
+
+* I don't think it handles multi-line make commands exactly correctly
 (it's close but not quite right).
 
-Lots more options are needed.
+* Lots more options are needed.
 You should be able to control which make (make? gmake?), which auditor,
 what directories to watch/exclude, etc.
 
-There should be a way to easily override false positives.
+* There should be a way to easily override false positives.
 That is, a way to say "Report XXX specifically about YYY is not true".
 
-Lots more tests are needed.
+* Lots more tests are needed.
 
 ## Related/similar OSS tools
 
