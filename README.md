@@ -6,6 +6,8 @@ files in ways that are inconsistent with its Makefile.
 
 It requires an "auditor" tool named `pmaudit` in your PATH.
 It also *requires* GNU make to be installed and run as `make`.
+Finally, it requires `python3` as this tool is primarily implemented
+using Python version 3.X.
 
 ## Running
 
