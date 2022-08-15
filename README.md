@@ -41,8 +41,10 @@ Here are the errors it can report:
   If you don't want to use grouped targets, you can instead use a "marker
   file" to simulate grouped targets; just have TARGET and everything else
   depend on some marker file (`TARGET SET: MARKER_FILE`), then create
-  a separate rule to create the marker file and attach all commands to it
-  (`MARKER\_FILE: PREREQUISITES`).
+  a separate rule to create the marker file
+  (`MARKER_FILE: PREREQUISITES`).
+  Attach all commands to this latter rule that creates the marker file,
+  and be sure to update the marker file (e.g., `touch MARKER_FILE`).
 * `*** Error: Target TARGET : unmodified reported target: SET`
   The make recipe for updating TARGET does not appear to actually
   write to TARGET.
