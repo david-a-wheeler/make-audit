@@ -85,6 +85,15 @@ That is, a way to say "Report XXX specifically about YYY is not true".
 
 Lots more tests are needed.
 
+## Related/similar OSS tools
+
+[Checkmake](https://github.com/mrtazz/checkmake)
+is an experimental tool for linting and checking Makefiles.
+
+[make-booster](https://github.com/david-a-wheeler/make-booster)
+provides utility routines intended to greatly simplify data processing
+(particularly a data pipeline) using GNU make.
+
 ## License
 
 This is released under the [MIT license](./LICENSE.md), a
