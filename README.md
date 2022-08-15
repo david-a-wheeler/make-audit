@@ -69,7 +69,9 @@ what directories to watch/exclude, etc.
 
 Lots more tests are needed.
 
-I haven't even put a LICENSE here yet.
-That will all be coming.
-It will be a widely-used open source software license,
-probably MIT, GPL-2.0-or-later, or GPL-3.0-or-later.
+## License
+
+This is released under the [MIT license](./LICENSE.md), a
+well-known and widely-used open source software license.
+This depends on other tools, in particular `pmaudit` and `GNU make`,
+which have their own licenses.
