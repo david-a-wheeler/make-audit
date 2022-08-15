@@ -80,6 +80,9 @@ Lots more options are needed.
 You should be able to control which make, which auditor,
 what directories to watch/exclude, etc.
 
+There should be a way to easily override false positives.
+That is, a way to say "Report XXX specifically about YYY is not true".
+
 Lots more tests are needed.
 
 ## License
