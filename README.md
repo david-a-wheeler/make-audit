@@ -22,10 +22,10 @@ make-audit [*MAKE-OPTIONS*]
 ~~~~
 
 This will run make (which we presume is GNU make)
-with the specified options
+with the specified options.
 
 If you see no error `*** Error` output at the end,
-everything is fine!!
+it will report no error and everything is fine!!
 
 Here are the errors it can report:
 
@@ -53,6 +53,9 @@ Here are the errors it can report:
   The make recipe for updating TARGET does not appear to actually
   write to TARGET.
   You may need to add a missing command to actually modify TARGET.
+
+Note that when it reports an error it will also return a nonzero (false)
+error code.
 
 ## Auditor
 
