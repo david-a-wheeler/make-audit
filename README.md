@@ -33,11 +33,18 @@ Here are the errors it can report:
   You may want to remove SET from the prerequisites of TARGET.
 * `*** Error: Target TARGET : unreported target: SET`
   The make recipe for updating TARGET also modifies the files in SET
-  but this is not reported.
+  but this is not reported. The easy solution is to use GNU make's
+  grouped targets feature that it added in version 4.3,
+  e.g., `TARGET SET &: PREREQUISITES`.
+  If you don't want to use grouped targets, you can instead use a "marker
+  file" to simulate grouped targets; just have TARGET and everything else
+  depend on some marker file (`TARGET SET: MARKER_FILE`), then create
+  a separate rule to create the marker file and attach all commands to it
+  (`MARKER\_FILE: PREREQUISITES`).
 * `*** Error: Target TARGET : unmodified reported target: SET`
   The make recipe for updating TARGET does not appear to actually
   write to TARGET.
-  You may need to add a missing instruction to actually modify TARGET.
+  You may need to add a missing command to actually modify TARGET.
 
 ## Auditor
 
